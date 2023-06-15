@@ -12,11 +12,11 @@ type InputProps = {
   error?: string;
   touched?: boolean;
   onChange: {
-    (e: React.ChangeEvent<any>): void
-},
+    (e: React.ChangeEvent<any>): void;
+  };
   onBlur: {
     (e: React.FocusEvent<any, Element>): void;
-  }
+  };
 };
 
 const Input = ({
@@ -29,7 +29,7 @@ const Input = ({
   onChange,
   onBlur,
   touched,
-  value
+  value,
 }: InputProps) => {
   return (
     <div className="w-full relative">
@@ -37,6 +37,8 @@ const Input = ({
         id={id}
         name={name}
         disabled={disabled}
+        onChange={onChange}
+        onBlur={onBlur}
         placeholder=" "
         type={type}
         value={value}
@@ -54,14 +56,20 @@ const Input = ({
           disabled:opacity-70
           disabled:cursor-not-allowed
           pl-4
-          ${error ? "border-rose-500" : "border-neutral-300"}
-          ${error ? "focus:border-rose-500" : "focus:border-black"}
+          ${
+            Boolean(error && touched) ? "border-rose-500" : "border-neutral-300"
+          }
+          ${
+            Boolean(error && touched)
+              ? "focus:border-rose-500"
+              : "focus:border-neutral-300"
+          }
         `}
       />
       <label
         className={`
           absolute 
-          text-md
+          text-sm
           duration-150 
           transform 
           -translate-y-3 
@@ -73,11 +81,14 @@ const Input = ({
           peer-placeholder-shown:translate-y-0 
           peer-focus:scale-75
           peer-focus:-translate-y-4
-          ${error ? "text-rose-500" : "text-zinc-400"}
+          ${Boolean(error && touched) ? "text-rose-500" : "text-zinc-400"}
         `}
       >
         {label}
       </label>
+      {Boolean(error && touched) && (
+        <p className="text-rose-500 pl-4 text-sm pt-2">{error}</p>
+      )}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import Navbar from "./components/global/Navbar";
 import LoginModal from "./components/global/auth/Login";
+import RegisterModal from "./components/global/auth/Register";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className={font.className}>
         <Navbar />
         <LoginModal />
+        <RegisterModal />
         {children}
       </body>
     </html>

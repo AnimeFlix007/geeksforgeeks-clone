@@ -3,7 +3,7 @@
 
 import { AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
-import { useFormik } from "formik";
+import { FormikHelpers, useFormik } from "formik";
 
 import Modal from "../Modal";
 import Input from "../Input";
@@ -26,8 +26,9 @@ export default function LoginModal() {
     useFormik({
       initialValues,
       validationSchema: loginSchema,
-      onSubmit(values: initialValues, formikHelpers) {
+      onSubmit(values: initialValues, formikHelpers: FormikHelpers<initialValues>) {
         console.log(values);
+        formikHelpers.resetForm()
       },
     });
   const bodyContent = (
