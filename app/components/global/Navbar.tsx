@@ -1,13 +1,20 @@
 "use client";
 
+import { setLoginModalOpen } from "@/context/slice/LoginModalSlice";
+import { AppDispatch } from "@/context/store";
 import Image from "next/image";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 type Props = {};
 
 export default function Navbar({}: Props) {
+  const dispatch = useDispatch<AppDispatch>();
   const [showAvatar, setShowAvatar] = useState<boolean>(false);
   const [showMenuItems, setShowMenuItems] = useState<boolean>(true);
+  function showLoginModal() {
+    dispatch(setLoginModalOpen());
+  }
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="flex flex-wrap items-center justify-between mx-auto p-4">
@@ -24,24 +31,34 @@ export default function Navbar({}: Props) {
           </span>
         </a>
         <div className="flex items-center md:order-2">
-         {<button
-            type="button"
-            className="flex mr-3 text-sm rounded-full md:mr-0"
-            id="user-menu-button"
-            aria-expanded="false"
-            data-dropdown-toggle="user-dropdown"
-            data-dropdown-placement="bottom"
-            onClick={() => setShowAvatar((prev: boolean) => !prev)}
-          >
-            <span className="sr-only">Open user menu</span>
-            <Image
-              className="w-8 h-8 rounded-full"
-              src="/images/Avatar.avif"
-              alt="user photo"
-              height={32}
-              width={32}
-            />
-          </button>}
+          {false ? (
+            <button
+              type="button"
+              className="flex mr-3 text-sm rounded-full md:mr-0"
+              id="user-menu-button"
+              aria-expanded="false"
+              data-dropdown-toggle="user-dropdown"
+              data-dropdown-placement="bottom"
+              onClick={() => setShowAvatar((prev: boolean) => !prev)}
+            >
+              <span className="sr-only">Open user menu</span>
+              <Image
+                className="w-8 h-8 rounded-full"
+                src="/images/Avatar.avif"
+                alt="user photo"
+                height={32}
+                width={32}
+              />
+            </button>
+          ) : (
+            <button
+              onClick={showLoginModal}
+              type="button"
+              className="focus:outline-none text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+            >
+              Login
+            </button>
+          )}
 
           {showAvatar && (
             <div
