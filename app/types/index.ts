@@ -9,9 +9,9 @@ export type Example = {
 export type User = {
   access_token: string;
   id: string;
-  fullName: string;
-  email: string;
-  photoURL: string;
+  fullName: string | null;
+  email: string | null;
+  photoURL: string | null;
 };
 
 // local problem data

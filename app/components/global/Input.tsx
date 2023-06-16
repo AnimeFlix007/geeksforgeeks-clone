@@ -1,7 +1,5 @@
 "use client";
 
-import { BiDollar } from "react-icons/bi";
-
 type InputProps = {
   id: string;
   name: string;

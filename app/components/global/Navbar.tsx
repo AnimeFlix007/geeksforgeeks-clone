@@ -1,24 +1,32 @@
 "use client";
 
 import { setLoginModalOpen } from "@/context/slice/LoginModalSlice";
-import { AppDispatch } from "@/context/store";
+import { logOut } from "@/context/slice/authSlice";
+import { AppDispatch, useAppSelector } from "@/context/store";
+import { auth } from "@/firebase/firebase.config";
+import { signOut } from "firebase/auth";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import {} from "react";
 
 type Props = {};
 
 export default function Navbar({}: Props) {
   const dispatch = useDispatch<AppDispatch>();
+  const user = useAppSelector((store) => store.auth.user);
   const [showAvatar, setShowAvatar] = useState<boolean>(false);
   const [showMenuItems, setShowMenuItems] = useState<boolean>(true);
   function showLoginModal() {
     dispatch(setLoginModalOpen());
   }
+  function logOutHandler() {
+    signOut(auth).then(() => dispatch(logOut()));
+  }
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="https://flowbite.com/" className="flex items-center">
+        <p className="flex items-center">
           <Image
             src="/images/gfglogo.jpg"
             className="h-8 mr-3 rounded-full"
@@ -29,27 +37,17 @@ export default function Navbar({}: Props) {
           <span className="self-center text-2xl text-slate-700 font-semibold whitespace-nowrap dark:text-white">
             GeeksForGeeks
           </span>
-        </a>
+        </p>
         <div className="flex items-center md:order-2">
-          {false ? (
-            <button
-              type="button"
-              className="flex mr-3 text-sm rounded-full md:mr-0"
-              id="user-menu-button"
-              aria-expanded="false"
-              data-dropdown-toggle="user-dropdown"
-              data-dropdown-placement="bottom"
+          {user ? (
+            <Image
               onClick={() => setShowAvatar((prev: boolean) => !prev)}
-            >
-              <span className="sr-only">Open user menu</span>
-              <Image
-                className="w-8 h-8 rounded-full"
-                src="/images/Avatar.avif"
-                alt="user photo"
-                height={32}
-                width={32}
-              />
-            </button>
+              className="w-8 h-8 rounded-full"
+              src={user.photoURL || "/images/Avatar.avif"}
+              alt="user photo"
+              height={32}
+              width={32}
+            />
           ) : (
             <button
               onClick={showLoginModal}
@@ -60,7 +58,7 @@ export default function Navbar({}: Props) {
             </button>
           )}
 
-          {showAvatar && (
+          {(showAvatar && user) && (
             <div
               className="fixed w-full h-full top-0 left-0"
               onClick={() => setShowAvatar(false)}
@@ -74,10 +72,10 @@ export default function Navbar({}: Props) {
               >
                 <div className="px-4 py-3">
                   <span className="block text-sm text-gray-900 dark:text-white">
-                    Bonnie Green
+                    {user?.fullName}
                   </span>
                   <span className="block text-sm  text-gray-500 truncate dark:text-gray-400">
-                    name@flowbite.com
+                    {user?.email}
                   </span>
                 </div>
                 <ul className="py-2" aria-labelledby="user-menu-button">
@@ -105,7 +103,7 @@ export default function Navbar({}: Props) {
                       Earnings
                     </a>
                   </li>
-                  <li>
+                  <li onClick={logOutHandler}>
                     <a
                       href="#"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"

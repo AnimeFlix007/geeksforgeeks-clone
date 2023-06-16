@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { AiFillGithub } from "react-icons/ai";
@@ -13,7 +12,14 @@ import { loginSchema } from "@/app/schema/LoginSchema";
 import { AppDispatch, useAppSelector } from "@/context/store";
 import { useDispatch } from "react-redux";
 import { onCloseLoginModal } from "@/context/slice/LoginModalSlice";
-import { onCloseRegisterModal, setOpenRegisterModal } from "@/context/slice/RegisterModalSlice";
+import { setOpenRegisterModal } from "@/context/slice/RegisterModalSlice";
+import { signInWithPopup } from "firebase/auth";
+import {
+  auth,
+  githubProvider,
+  googleProvider,
+} from "@/firebase/firebase.config";
+import { setUser } from "@/context/slice/authSlice";
 
 type initialValues = {
   email: string;
@@ -26,26 +32,52 @@ const initialValues: initialValues = {
 };
 
 export default function LoginModal() {
-  const dispatch = useDispatch<AppDispatch>()
-  const isOpen = useAppSelector(store => store.loginModal.isOpen)
+  const dispatch = useDispatch<AppDispatch>();
+  const isOpen = useAppSelector((store) => store.loginModal.isOpen);
   const { errors, handleChange, handleBlur, handleSubmit, values, touched } =
     useFormik({
       initialValues,
       validationSchema: loginSchema,
-      onSubmit(values: initialValues, formikHelpers: FormikHelpers<initialValues>) {
+      onSubmit(
+        values: initialValues,
+        formikHelpers: FormikHelpers<initialValues>
+      ) {
         console.log(values);
-        formikHelpers.resetForm()
+        formikHelpers.resetForm();
       },
     });
 
   function onCloseHandler(): void {
-    dispatch(onCloseLoginModal())
+    dispatch(onCloseLoginModal());
   }
 
   function openRegisterModalHandler(): void {
     dispatch(onCloseLoginModal());
     dispatch(setOpenRegisterModal());
   }
+
+  const googleLogin = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((data) => {
+        const user = {
+          access_token: data.user.refreshToken,
+          id: data.user.uid,
+          fullName: data.user.displayName,
+          email: data.user.email,
+          photoURL: data.user.photoURL,
+        };
+        dispatch(setUser(user));
+      })
+      .then(() => dispatch(onCloseLoginModal()))
+      .catch((err) => console.log(err.message));
+  };
+
+  const githubLogin = () => {
+    signInWithPopup(auth, githubProvider)
+      .then((data) => console.log(data))
+      .then(() => dispatch(onCloseLoginModal()))
+      .catch((err) => console.log(err.message));
+  };
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -82,13 +114,13 @@ export default function LoginModal() {
         outline
         label="Continue with Google"
         icon={FcGoogle}
-        onClick={() => {}}
+        onClick={googleLogin}
       />
       <Button
         outline
         label="Continue with Github"
         icon={AiFillGithub}
-        onClick={() => {}}
+        onClick={githubLogin}
       />
       <div
         className="
@@ -99,7 +131,7 @@ export default function LoginModal() {
         "
       >
         <p>
-          Don't have an account?
+          Dont have an account?
           <span
             onClick={openRegisterModalHandler}
             className="

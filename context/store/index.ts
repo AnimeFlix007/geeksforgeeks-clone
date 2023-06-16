@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit"
 import { TypedUseSelectorHook, useSelector } from "react-redux"
 import LoginModalSlice from "../slice/LoginModalSlice"
 import RegisterModalSlice from "../slice/RegisterModalSlice"
+import authSlice from "../slice/authSlice"
 
 const store = configureStore({
     reducer: {
         loginModal: LoginModalSlice,
         registerModal: RegisterModalSlice,
+        auth: authSlice
     }
 })
 
