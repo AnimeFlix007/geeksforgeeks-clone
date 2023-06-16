@@ -10,7 +10,10 @@ import Input from "../Input";
 import Heading from "../Heading";
 import Button from "../Button";
 import { registerSchema } from "@/app/schema/RegisterSchema";
-
+import { onCloseRegisterModal } from "@/context/slice/RegisterModalSlice";
+import { AppDispatch, useAppSelector } from "@/context/store";
+import { useDispatch } from "react-redux";
+import { setLoginModalOpen } from "@/context/slice/LoginModalSlice";
 
 type initialValues = {
   username: string;
@@ -25,18 +28,35 @@ const initialValues: initialValues = {
 };
 
 export default function RegisterModal() {
+  const dispatch = useDispatch<AppDispatch>();
+  const isOpen = useAppSelector((store) => store.registerModal.isOpen);
   const { errors, handleChange, handleBlur, handleSubmit, values, touched } =
     useFormik({
       initialValues,
       validationSchema: registerSchema,
-      onSubmit(values: initialValues, formikHelpers: FormikHelpers<initialValues>) {
+      onSubmit(
+        values: initialValues,
+        formikHelpers: FormikHelpers<initialValues>
+      ) {
         console.log(values);
-        formikHelpers.resetForm()
+        formikHelpers.resetForm();
       },
     });
+
+  function onCloseHandler(): void {
+    dispatch(onCloseRegisterModal());
+  }
+  function openLoginModalHandler(): void {
+    dispatch(onCloseRegisterModal());
+    dispatch(setLoginModalOpen());
+  }
+
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Welcome to GeeksForGeeks!!" subtitle="SignUp to submit your code" />
+      <Heading
+        title="Welcome to GeeksForGeeks!!"
+        subtitle="SignUp to submit your code"
+      />
       <Input
         id="username"
         name="username"
@@ -99,7 +119,7 @@ export default function RegisterModal() {
         <p>
           Don't have an account?
           <span
-            onClick={() => {}}
+            onClick={openLoginModalHandler}
             className="
               text-neutral-800
               cursor-pointer 
@@ -107,7 +127,7 @@ export default function RegisterModal() {
             "
           >
             {" "}
-            Sign up
+            Sign In
           </span>
         </p>
       </div>
@@ -117,10 +137,10 @@ export default function RegisterModal() {
   return (
     <Modal
       disabled={false}
-      isOpen={true}
+      isOpen={isOpen}
       title="Register"
       actionLabel="Continue"
-      onClose={() => {}}
+      onClose={onCloseHandler}
       onSubmit={handleSubmit}
       body={bodyContent}
       footer={footerContent}

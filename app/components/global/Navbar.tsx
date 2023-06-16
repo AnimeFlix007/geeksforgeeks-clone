@@ -24,7 +24,7 @@ export default function Navbar({}: Props) {
           </span>
         </a>
         <div className="flex items-center md:order-2">
-          <button
+         {<button
             type="button"
             className="flex mr-3 text-sm rounded-full md:mr-0"
             id="user-menu-button"
@@ -41,7 +41,8 @@ export default function Navbar({}: Props) {
               height={32}
               width={32}
             />
-          </button>
+          </button>}
+
           {showAvatar && (
             <div
               className="fixed w-full h-full top-0 left-0"
