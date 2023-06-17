@@ -5,6 +5,7 @@ import Navbar from "./components/global/Navbar";
 import LoginModal from "./components/global/auth/Login";
 import RegisterModal from "./components/global/auth/Register";
 import ReduxProvider from "@/context/store/ReduxProvider";
+import ToastProvider from "./provider/ToastProvider";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Navbar />
           <LoginModal />
           <RegisterModal />
+          <ToastProvider />
           {children}
         </ReduxProvider>
       </body>

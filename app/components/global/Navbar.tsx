@@ -9,6 +9,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import {} from "react";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -18,7 +19,8 @@ export default function Navbar({}: Props) {
   const [showAvatar, setShowAvatar] = useState<boolean>(false);
   const [showMenuItems, setShowMenuItems] = useState<boolean>(true);
   function showLoginModal() {
-    dispatch(setLoginModalOpen());
+    dispatch(setLoginModalOpen())
+    toast.success("LogOut Successfully")
   }
   function logOutHandler() {
     signOut(auth).then(() => dispatch(logOut()));

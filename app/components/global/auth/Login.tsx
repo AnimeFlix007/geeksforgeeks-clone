@@ -20,6 +20,9 @@ import {
   googleProvider,
 } from "@/firebase/firebase.config";
 import { setUser } from "@/context/slice/authSlice";
+import { toast } from "react-toastify";
+import {toastOptions} from "@/app/utils/toastOptions"
+import {toastType} from "@/app/types"
 
 type initialValues = {
   email: string;
@@ -68,13 +71,14 @@ export default function LoginModal() {
         };
         dispatch(setUser(user));
       })
+      .then(() => toast.success("LoggedIn Successfully"))
       .then(() => dispatch(onCloseLoginModal()))
-      .catch((err) => console.log(err.message));
+      .catch((err) => toast.error(err.message));
   };
 
   const githubLogin = () => {
     signInWithPopup(auth, githubProvider)
-      .then((data) => console.log(data))
+      .then(() => toast.success("LoggedIn Successfully"))
       .then(() => dispatch(onCloseLoginModal()))
       .catch((err) => console.log(err.message));
   };
