@@ -25,6 +25,7 @@ import {
 } from "@/firebase/firebase.config";
 import { setUser } from "@/context/slice/authSlice";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 type initialValues = {
   email: string;
@@ -37,6 +38,7 @@ const initialValues: initialValues = {
 };
 
 export default function LoginModal() {
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch<AppDispatch>();
   const isOpen = useAppSelector((store) => store.loginModal.isOpen);
   const { errors, handleChange, handleBlur, handleSubmit, values, touched } =
@@ -47,6 +49,7 @@ export default function LoginModal() {
         values: initialValues,
         formikHelpers: FormikHelpers<initialValues>
       ) {
+        setLoading(prev => !prev);
         try {
           const data: UserCredential = await signInWithEmailAndPassword(
             auth,
@@ -61,10 +64,13 @@ export default function LoginModal() {
             photoURL: data.user.photoURL,
           };
           dispatch(setUser(user));
+          dispatch(onCloseLoginModal()); 
           toast.success("signed in successfully!!");
           formikHelpers.resetForm();
         } catch (error: any) {
           toast.error(error.message);
+        } finally {
+          setLoading(prev => !prev);
         }
       },
     });
@@ -173,7 +179,7 @@ export default function LoginModal() {
 
   return (
     <Modal
-      disabled={false}
+      disabled={loading}
       isOpen={isOpen}
       title="Login"
       actionLabel="Continue"

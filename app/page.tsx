@@ -25,7 +25,7 @@ export default function Home() {
         >
           Learn DSA in the Best Way
         </h1>
-        <div className="relative overflow-x-auto mx-auto px-6 pb-10">
+        <div className="overflow-x-auto mx-auto px-6 pb-10">
           <table className="text-sm text-left text-gray-500 dark:text-gray-400 sm:w-7/12 w-full max-w-[1200px] mx-auto">
             {!loadingProblems && (
               <thead className="text-xs text-gray-700 uppercase dark:text-gray-400 border-b ">

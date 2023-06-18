@@ -8,12 +8,13 @@ import { signOut } from "firebase/auth";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import {} from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 export default function Navbar({}: Props) {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const user = useAppSelector((store) => store.auth.user);
   const [showAvatar, setShowAvatar] = useState<boolean>(false);
@@ -23,12 +24,20 @@ export default function Navbar({}: Props) {
   function logOutHandler() {
     signOut(auth)
       .then(() => dispatch(logOut()))
-      .then(() => toast.success("Logged out"));
+      .then(() => toast.success("Logged out Successfully"));
   }
+
+  const navigateToHomePage = () => {
+    router.push("/");
+  };
+
   return (
     <nav className="bg-green-100 border-gray-200 dark:bg-gray-900">
       <div className="flex flex-wrap items-center justify-between mx-auto p-4">
-        <p className="flex items-center">
+        <p
+          className="flex items-center cursor-pointer"
+          onClick={navigateToHomePage}
+        >
           <Image
             src="/images/gfglogo.jpg"
             className="h-8 mr-3 rounded-full"
@@ -66,7 +75,7 @@ export default function Navbar({}: Props) {
               onClick={() => setShowAvatar(false)}
             >
               <div
-                className="absolute top-12 right-8 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                className="absolute top-12 right-8 z-100 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
                 id="user-dropdown"
                 onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
                   e.stopPropagation()
@@ -80,7 +89,7 @@ export default function Navbar({}: Props) {
                     {user?.email}
                   </span>
                 </div>
-                <ul className="py-2" aria-labelledby="user-menu-button">
+                <ul className="py-2 bg-white" aria-labelledby="user-menu-button">
                   <li>
                     <a
                       href="#"
@@ -95,6 +104,14 @@ export default function Navbar({}: Props) {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                     >
                       Fav List
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >
+                      Reset Password
                     </a>
                   </li>
                   <li onClick={logOutHandler}>

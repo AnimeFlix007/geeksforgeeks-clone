@@ -21,6 +21,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { toast } from "react-toastify";
+import { setUser } from "@/context/slice/authSlice";
 
 type initialValues = {
   username: string;
@@ -46,14 +47,22 @@ export default function RegisterModal() {
         formikHelpers: FormikHelpers<initialValues>
       ) {
         const auth: Auth = getAuth();
-        const res = await createUserWithEmailAndPassword(
+        const data = await createUserWithEmailAndPassword(
           auth,
           values.email,
           values.password
         );
-        await updateProfile(res.user, {
+        await updateProfile(data.user, {
           displayName: values.username,
         });
+        const user = {
+          access_token: data.user.refreshToken,
+          id: data.user.uid,
+          fullName: data.user.displayName,
+          email: data.user.email,
+          photoURL: data.user.photoURL,
+        };
+        dispatch(setUser(user));
         formikHelpers.resetForm();
         dispatch(onCloseRegisterModal());
         toast.success("Registration Success")

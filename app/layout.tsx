@@ -6,10 +6,11 @@ import LoginModal from "./components/global/auth/Login";
 import RegisterModal from "./components/global/auth/Register";
 import ReduxProvider from "@/context/store/ReduxProvider";
 import ToastProvider from "./provider/ToastProvider";
+import ClientOnly from "./Client/ClientOnly";
 
 const font = Poppins({
   subsets: ["latin"],
-  weight: "400"
+  weight: "400",
 });
 
 export const metadata = {
@@ -22,10 +23,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body className={font.className}>
         <ReduxProvider>
-          <Navbar />
-          <LoginModal />
-          <RegisterModal />
-          <ToastProvider />
+          <ClientOnly>
+            <Navbar />
+            <LoginModal />
+            <RegisterModal />
+            <ToastProvider />
+          </ClientOnly>
           {children}
         </ReduxProvider>
       </body>

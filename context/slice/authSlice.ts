@@ -9,12 +9,17 @@ type Action = {
   payload: User | null;
 };
 
-const getUserDetails = localStorage.getItem("geeks4geeks")
-
-const loggedInUser = localStorage.getItem("geeks4geeks") ? JSON.parse(getUserDetails) : null
+const loggedInUser: () => User | null = () => {
+  if (typeof window !== "undefined") {
+    const item = window.localStorage.getItem("geeks4geeks");
+    return item ? JSON.parse(item) : null;
+  } else {
+    return null;
+  }
+};
 
 const initialState: initialState = {
-  user: loggedInUser,
+  user: loggedInUser(),
 };
 
 const authSlice = createSlice({
