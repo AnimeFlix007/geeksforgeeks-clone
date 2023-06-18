@@ -13,7 +13,11 @@ import { AppDispatch, useAppSelector } from "@/context/store";
 import { useDispatch } from "react-redux";
 import { onCloseLoginModal } from "@/context/slice/LoginModalSlice";
 import { setOpenRegisterModal } from "@/context/slice/RegisterModalSlice";
-import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  UserCredential,
+} from "firebase/auth";
 import {
   auth,
   githubProvider,
@@ -43,14 +47,25 @@ export default function LoginModal() {
         values: initialValues,
         formikHelpers: FormikHelpers<initialValues>
       ) {
-        const res = await createUserWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        );
-        console.log(res);
-        toast.success("User successfully signed in")
-        formikHelpers.resetForm();
+        try {
+          const data: UserCredential = await signInWithEmailAndPassword(
+            auth,
+            values.email,
+            values.password
+          );
+          const user = {
+            access_token: data.user.refreshToken,
+            id: data.user.uid,
+            fullName: data.user.displayName,
+            email: data.user.email,
+            photoURL: data.user.photoURL,
+          };
+          dispatch(setUser(user));
+          toast.success("signed in successfully!!");
+          formikHelpers.resetForm();
+        } catch (error: any) {
+          toast.error(error.message);
+        }
       },
     });
 

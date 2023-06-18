@@ -20,6 +20,7 @@ import {
   getAuth,
   updateProfile,
 } from "firebase/auth";
+import { toast } from "react-toastify";
 
 type initialValues = {
   username: string;
@@ -55,6 +56,7 @@ export default function RegisterModal() {
         });
         formikHelpers.resetForm();
         dispatch(onCloseRegisterModal());
+        toast.success("Registration Success")
       },
     });
 
