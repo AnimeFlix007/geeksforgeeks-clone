@@ -22,6 +22,7 @@ import {
 } from "firebase/auth";
 import { toast } from "react-toastify";
 import { setUser } from "@/context/slice/authSlice";
+import { useState } from "react";
 
 type initialValues = {
   username: string;
@@ -36,6 +37,7 @@ const initialValues: initialValues = {
 };
 
 export default function RegisterModal() {
+  const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const isOpen = useAppSelector((store) => store.registerModal.isOpen);
   const { errors, handleChange, handleBlur, handleSubmit, values, touched } =
@@ -46,26 +48,33 @@ export default function RegisterModal() {
         values: initialValues,
         formikHelpers: FormikHelpers<initialValues>
       ) {
-        const auth: Auth = getAuth();
-        const data = await createUserWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        );
-        await updateProfile(data.user, {
-          displayName: values.username,
-        });
-        const user = {
-          access_token: data.user.refreshToken,
-          id: data.user.uid,
-          fullName: data.user.displayName,
-          email: data.user.email,
-          photoURL: data.user.photoURL,
-        };
-        dispatch(setUser(user));
-        formikHelpers.resetForm();
-        dispatch(onCloseRegisterModal());
-        toast.success("Registration Success")
+        setLoading((prev) => !prev);
+        try {
+          const auth: Auth = getAuth();
+          const data = await createUserWithEmailAndPassword(
+            auth,
+            values.email,
+            values.password
+          );
+          await updateProfile(data.user, {
+            displayName: values.username,
+          });
+          const user = {
+            access_token: data.user.refreshToken,
+            id: data.user.uid,
+            fullName: data.user.displayName,
+            email: data.user.email,
+            photoURL: data.user.photoURL,
+          };
+          dispatch(setUser(user));
+          formikHelpers.resetForm();
+          dispatch(onCloseRegisterModal());
+          toast.success("Registration Success");
+        } catch (error: any) {
+          toast.error(error.message);
+        } finally {
+          setLoading((prev) => !prev);
+        }
       },
     });
 
@@ -88,6 +97,7 @@ export default function RegisterModal() {
         name="username"
         label="Username"
         type="text"
+        disabled={loading}
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.username}
@@ -104,6 +114,7 @@ export default function RegisterModal() {
         error={errors.email}
         touched={touched.email}
         value={values.email}
+        disabled={loading}
       />
       <Input
         id="password"
@@ -115,6 +126,7 @@ export default function RegisterModal() {
         error={errors.password}
         touched={touched.password}
         value={values.password}
+        disabled={loading}
       />
     </div>
   );
@@ -162,7 +174,7 @@ export default function RegisterModal() {
 
   return (
     <Modal
-      disabled={false}
+      disabled={loading}
       isOpen={isOpen}
       title="Register"
       actionLabel="Continue"

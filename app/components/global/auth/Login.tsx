@@ -116,6 +116,7 @@ export default function LoginModal() {
         name="email"
         label="Email"
         type="email"
+        disabled={loading}
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.email}
@@ -127,6 +128,7 @@ export default function LoginModal() {
         name="password"
         label="Password"
         type="password"
+        disabled={loading}
         onChange={handleChange}
         onBlur={handleBlur}
         error={errors.password}
