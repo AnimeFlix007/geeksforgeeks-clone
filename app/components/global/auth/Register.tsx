@@ -14,6 +14,12 @@ import { onCloseRegisterModal } from "@/context/slice/RegisterModalSlice";
 import { AppDispatch, useAppSelector } from "@/context/store";
 import { useDispatch } from "react-redux";
 import { setLoginModalOpen } from "@/context/slice/LoginModalSlice";
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  getAuth,
+  updateProfile,
+} from "firebase/auth";
 
 type initialValues = {
   username: string;
@@ -34,12 +40,21 @@ export default function RegisterModal() {
     useFormik({
       initialValues,
       validationSchema: registerSchema,
-      onSubmit(
+      async onSubmit(
         values: initialValues,
         formikHelpers: FormikHelpers<initialValues>
       ) {
-        console.log(values);
+        const auth: Auth = getAuth();
+        const res = await createUserWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        );
+        await updateProfile(res.user, {
+          displayName: values.username,
+        });
         formikHelpers.resetForm();
+        dispatch(onCloseRegisterModal());
       },
     });
 

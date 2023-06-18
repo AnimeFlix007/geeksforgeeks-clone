@@ -13,7 +13,7 @@ import { AppDispatch, useAppSelector } from "@/context/store";
 import { useDispatch } from "react-redux";
 import { onCloseLoginModal } from "@/context/slice/LoginModalSlice";
 import { setOpenRegisterModal } from "@/context/slice/RegisterModalSlice";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 import {
   auth,
   githubProvider,
@@ -21,8 +21,6 @@ import {
 } from "@/firebase/firebase.config";
 import { setUser } from "@/context/slice/authSlice";
 import { toast } from "react-toastify";
-import {toastOptions} from "@/app/utils/toastOptions"
-import {toastType} from "@/app/types"
 
 type initialValues = {
   email: string;
@@ -41,11 +39,17 @@ export default function LoginModal() {
     useFormik({
       initialValues,
       validationSchema: loginSchema,
-      onSubmit(
+      async onSubmit(
         values: initialValues,
         formikHelpers: FormikHelpers<initialValues>
       ) {
-        console.log(values);
+        const res = await createUserWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        );
+        console.log(res);
+        toast.success("User successfully signed in")
         formikHelpers.resetForm();
       },
     });
