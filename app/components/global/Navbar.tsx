@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Timer from "../Timer";
 
 type Props = {};
 
@@ -50,6 +51,9 @@ export default function Navbar({}: Props) {
           </span>
         </p>
         <div className="flex items-center md:order-2">
+          <div className=" px-4">
+            <Timer />
+          </div>
           {user ? (
             <Image
               onClick={() => setShowAvatar((prev: boolean) => !prev)}
@@ -89,7 +93,10 @@ export default function Navbar({}: Props) {
                     {user?.email}
                   </span>
                 </div>
-                <ul className="py-2 bg-white" aria-labelledby="user-menu-button">
+                <ul
+                  className="py-2 bg-white"
+                  aria-labelledby="user-menu-button"
+                >
                   <li>
                     <a
                       href="#"

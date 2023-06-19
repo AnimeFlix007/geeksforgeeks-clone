@@ -1,3 +1,4 @@
+import WorkSpace from "@/app/components/workspace/WorkSpace";
 import React from "react";
 
 type Props = {
@@ -7,5 +8,9 @@ type Props = {
 };
 
 export default function page({ params: { pid } }: Props) {
-  return <div>{pid}</div>;
+  return (
+    <div>
+      <WorkSpace pid={pid} />
+    </div>
+  );
 }

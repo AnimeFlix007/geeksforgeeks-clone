@@ -43,7 +43,7 @@ const Timer = ({}: TimerProps) => {
         </div>
       ) : (
         <div
-          className="flex items-center p-1 h-8 hover:bg-dark-fill-3 rounded cursor-pointer"
+          className="flex items-center p-1 h-12 hover:bg-dark-fill-3 rounded cursor-pointer"
           onClick={() => setShowTimer(true)}
         >
           <svg
@@ -52,7 +52,7 @@ const Timer = ({}: TimerProps) => {
             width="1em"
             height="1em"
             fill="currentColor"
-            className="h-6 w-6"
+            className=" h-8 w-8 mb-2"
           >
             <path
               fillRule="evenodd"
