@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { BsCheckCircle } from "react-icons/bs";
 import { AiFillYoutube } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
-import { problems } from "@/mocks/Problems";
+import { problemList } from "@/mocks/Problems";
 import YouTube from "react-youtube";
 
 type ProblemsTableProps = {
@@ -32,7 +32,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
   return (
     <>
       <tbody className="text-black">
-        {problems.map((problem, idx) => {
+        {problemList.map((problem, idx) => {
           const difficulyColor =
             problem.difficulty === "Easy"
               ? "text-dark-green-s"

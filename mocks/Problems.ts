@@ -7,7 +7,7 @@ export type Problem = {
 	videoId?: string;
 };
 
-export const problems: Problem[] = [
+export const problemList: Problem[] = [
 	{
 		id: "array-sum",
 		title: "Array Sum",
