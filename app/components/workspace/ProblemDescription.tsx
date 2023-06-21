@@ -12,10 +12,11 @@ import {
 import { BsCheck2Circle } from "react-icons/bs";
 import { TiStarOutline } from "react-icons/ti";
 import { toast } from "react-toastify";
-import { Problem } from "@/mocks/Problems";
+import { Problem } from "@/mocks/types";
+import Image from "next/image";
 
 type Props = {
-  problem: Problem | null | undefined;
+  problem: Problem;
   _solved: boolean;
 };
 
@@ -33,7 +34,7 @@ export default function ProblemDescription({ problem, _solved }: Props) {
         </div>
       </div>
 
-      <div className="flex px-0 py-4 h-[calc(100vh-94px)] overflow-y-auto">
+      <div className="flex px-0 py-4 h-[calc(100vh-94px)] overflow-y-auto bg-slate-200">
         <div className="px-5">
           {/* Problem heading */}
           <div className="w-full">
@@ -52,6 +53,55 @@ export default function ProblemDescription({ problem, _solved }: Props) {
                 <CircleSkeleton />
               </div>
             )}
+            <div className=" text-sm">
+              <div
+                dangerouslySetInnerHTML={{ __html: problem.problemStatement }}
+              />
+            </div>
+
+            {/* Examples */}
+            <div className="mt-4">
+              {problem.examples.map((example, index) => (
+                <div key={example.id} className="mt-2 mb-4">
+                  <p className="font-medium  ">
+                    Example {index + 1}:{" "}
+                  </p>
+                  {example.img && (
+                    <Image
+                      src={example.img}
+                      alt="example"
+                      width={100}
+                      height={100}
+                      className="mt-3"
+                    />
+                  )}
+                  <div className="example-card">
+                    <pre>
+                      <strong className="">Input: </strong>{" "}
+                      {example.inputText}
+                      <br />
+                      <strong>Output:</strong>
+                      {example.outputText} <br />
+                      {example.explanation && (
+                        <>
+                          <strong>Explanation:</strong> {example.explanation}
+                        </>
+                      )}
+                    </pre>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Constraints */}
+            <div className="my-8 pb-4">
+              <div className=" text-sm font-medium">Constraints:</div>
+              <ul className=" ml-5 list-disc ">
+                <div
+                  dangerouslySetInnerHTML={{ __html: problem.constraints }}
+                />
+              </ul>
+            </div>
           </div>
         </div>
       </div>

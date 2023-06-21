@@ -6,8 +6,8 @@ import useWindowSize from "@/app/hooks/useWindowSize";
 
 import Split from "react-split";
 import Confetti from "react-confetti";
-import { Problem, problems } from "@/mocks/Problems";
 import ProblemDescription from "./ProblemDescription";
+import { problems } from "@/mocks/AllProblems";
 
 type Props = {
   pid: string;
@@ -17,15 +17,10 @@ export default function WorkSpace({ pid }: Props) {
   const { width, height } = useWindowSize();
   const [success, setSuccess] = useState(false);
   const [solved, setSolved] = useState(false);
-  const [problem, setProblem] = useState<Problem | null | undefined>(null);
-
-  useEffect(() => {
-    setProblem(problems.find((p) => p.id === pid));
-  }, [pid]);
 
   return (
     <Split className="split" minSize={0}>
-      <ProblemDescription problem={problem} _solved={solved} />
+      <ProblemDescription problem={problems[pid]} _solved={solved} />
       <div className="bg-dark-fill-2">
         {/* <Playground
           problem={problem}
