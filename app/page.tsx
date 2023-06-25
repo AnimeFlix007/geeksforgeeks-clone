@@ -2,9 +2,40 @@
 
 import { useState, useEffect } from "react";
 import ProblemsTable from "./components/home/ProblemTable";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/firebase/firebase.config";
+import { toast } from "react-toastify";
 
 export default function Home() {
   const [loadingProblems, setLoadingProblems] = useState(true);
+  const [data, setData] = useState({
+    id: "",
+    title: "",
+    difficulty: "",
+    category: "",
+    videoId: "",
+    likes: 0,
+    order: 0,
+    dislikes: 0,
+  });
+
+  const submitHandler = async(e: any) => {
+    e.preventDefault();
+    console.log(data);
+    try {
+      const res = await setDoc(doc(db, "problems", data.id), {...data, order: Number(data.order)})
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  function onchangeHandler(e: any) {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value
+    })
+  }
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {
@@ -61,6 +92,15 @@ export default function Home() {
             </section>
           )}
         </div>
+        <form onSubmit={submitHandler}>
+          <input onChange={onchangeHandler} type="text" placeholder="Problem Id" name="id" />
+          <input onChange={onchangeHandler} type="text" placeholder="title" name="title" />
+          <input onChange={onchangeHandler} type="text" placeholder="Difficulty" name="difficulty" />
+          <input onChange={onchangeHandler} type="text" placeholder="category" name="category" />
+          <input onChange={onchangeHandler} type="text" placeholder="videoId" name="videoId" />
+          <input onChange={onchangeHandler} type="number" placeholder="order" name="order" />
+          <button type="submit">Submit</button>
+        </form>
       </main>
     </>
   );
