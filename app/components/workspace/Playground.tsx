@@ -4,6 +4,7 @@ import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import React from "react";
 import Split from "react-split";
 import { Problem } from "@/mocks/types";
+import PreferenceNavbar from "./PreferenceNavbar";
 
 type Props = {
   problem: Problem;
@@ -12,6 +13,7 @@ type Props = {
 export default function Playground({ problem }: Props) {
   return (
     <div className="flex flex-col bg-dark-layer-1 relative overflow-x-hidden">
+      <PreferenceNavbar />
       <Split
         className="h-[calc(100vh-94px)]"
         direction="vertical"
