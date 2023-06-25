@@ -1,6 +1,5 @@
 import ReactCodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import React, { useState } from "react";
 import Split from "react-split";
 import { Problem } from "@/mocks/types";
@@ -13,6 +12,7 @@ type Props = {
 
 export default function Playground({ problem }: Props) {
   const [activeTestCaseId, setActiveTestCaseId] = useState(0)
+  let [userCode, setUserCode] = useState<string>(problem.starterCode);
   return (
     <div className="flex flex-col bg-dark-layer-1 relative overflow-x-hidden">
       <PreferenceNavbar />
@@ -24,7 +24,7 @@ export default function Playground({ problem }: Props) {
       >
         <div className="w-full overflow-auto">
           <ReactCodeMirror
-            // value={userCode}
+            value={userCode}
             // theme={vscodeDark}
             // onChange={onChange}
             extensions={[javascript()]}
@@ -51,7 +51,7 @@ export default function Playground({ problem }: Props) {
               >
                 <div className="flex flex-wrap items-center gap-y-4">
                   <div
-                    className={`font-medium items-center transition-all focus:outline-none inline-flex bg-slate-100 hover:bg-slate-200 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap text-gray-500 ${activeTestCaseId===index ? 'bg-slate-300' : ''}`}
+                    className={`font-medium items-center transition-all focus:outline-none inline-flex bg-slate-100 hover:bg-slate-200 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap text-black ${activeTestCaseId===index ? 'bg-slate-300' : ''}`}
                   >
                     Case {index + 1}
                   </div>
