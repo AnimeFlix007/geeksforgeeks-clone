@@ -17,8 +17,8 @@ export const problemList: Problem[] = [
 		videoId: "8-k1C6ehKuw",
 	},
 	{
-		id: "2-mul",
-		title: "Multiply 2 Numbers",
+		id: "number-multiply",
+		title: "Number Multiply",
 		difficulty: "Easy",
 		category: "Number",
 		order: 2,

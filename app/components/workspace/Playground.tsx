@@ -2,12 +2,13 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import React, { useState } from "react";
 import Split from "react-split";
-import { Problem } from "@/mocks/types";
+
 import PreferenceNavbar from "./PreferenceNavbar";
 import PlaygroundFooter from "./PlaygroundFooter";
+import { localProblemType } from "@/app/types";
 
 type Props = {
-  problem: Problem;
+  problem: localProblemType;
 };
 
 export default function Playground({ problem }: Props) {

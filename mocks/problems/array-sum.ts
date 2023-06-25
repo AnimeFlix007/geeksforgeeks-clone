@@ -1,12 +1,12 @@
+import { localProblemType } from "@/app/types";
 import assert from "assert";
-import { Problem } from "../types";
 
-const starterCodeTwoSum = `function arraySum(nums,target){
+const starterCodeArraySum = `function arraySum(nums){
   // Write your code here
 };`;
 
 // checks if the user has the correct code
-const handlerTwoSum = (fn: any) => {
+const handlerArraySum = (fn: any) => {
   // fn is the callback that user's code is passed into
   try {
     const nums = [
@@ -29,12 +29,12 @@ const handlerTwoSum = (fn: any) => {
     }
     return true;
   } catch (error: any) {
-    console.log("twoSum handler function error");
+    console.log("arraySum handler function error");
     throw new Error(error);
   }
 };
 
-export const arraySum: Problem = {
+export const arraySum: localProblemType = {
   id: "array-sum",
   title: "1. Array Sum",
   problemStatement: `<p class='mt-3'>
@@ -48,18 +48,18 @@ export const arraySum: Problem = {
   examples: [
     {
       id: 1,
-      inputText: "nums = [2,7,1,5]",
+      inputText: "nums = [2, 7, 1, 5]",
       outputText: "15",
-      explanation: "Because 2+7+1+5 = 15, we return 15.",
+      explanation: "Because 2 + 7 + 1 + 5 = 15, we return 15.",
     },
     {
       id: 2,
-      inputText: "nums = [-3,-2,5]",
+      inputText: "nums = [-3, -2, 5]",
       outputText: "0",
     },
     {
       id: 3,
-      inputText: " nums = [1,3]",
+      inputText: " nums = [1, 3]",
       outputText: "4",
     },
   ],
@@ -73,8 +73,8 @@ export const arraySum: Problem = {
 <li class='mt-2 text-sm'>
 <strong>Only one valid answer exists.</strong>
 </li>`,
-  handlerFunction: handlerTwoSum,
-  starterCode: starterCodeTwoSum,
+  handlerFunction: handlerArraySum,
+  starterCode: starterCodeArraySum,
   order: 1,
-  starterFunctionName: "function twoSum(",
+  starterFunctionName: "function arraySum(",
 };

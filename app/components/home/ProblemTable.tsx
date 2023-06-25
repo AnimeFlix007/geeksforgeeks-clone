@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { BsCheckCircle } from "react-icons/bs";
 import { AiFillYoutube } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
-import { problemList } from "@/mocks/Problems";
+import { problemList } from "@/mocks/ProblemList";
 import YouTube from "react-youtube";
 
 type ProblemsTableProps = {

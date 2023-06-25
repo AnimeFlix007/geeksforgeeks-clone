@@ -12,11 +12,11 @@ import {
 import { BsCheck2Circle } from "react-icons/bs";
 import { TiStarOutline } from "react-icons/ti";
 import { toast } from "react-toastify";
-import { Problem } from "@/mocks/types";
 import Image from "next/image";
+import { localProblemType } from "@/app/types";
 
 type Props = {
-  problem: Problem;
+  problem: localProblemType;
   _solved: boolean;
 };
 

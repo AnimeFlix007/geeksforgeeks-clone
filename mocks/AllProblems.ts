@@ -1,12 +1,12 @@
-import { twomul } from "./problems/2-mul";
+import { numberMultiply } from "./problems/number-multiply";
 import {arraySum} from "./problems/array-sum"
-import { Problem } from "./types";
+import { localProblemType } from "@/app/types";
 
 interface ProblemMap {
-	[key: string]: Problem;
+	[key: string]: localProblemType;
 }
 
 export const problems: ProblemMap = {
 	"array-sum": arraySum,
-	"2-mul": twomul
+	"number-multiply": numberMultiply
 };

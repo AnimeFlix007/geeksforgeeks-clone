@@ -26,7 +26,7 @@ export type toastType = {
 }
 
 // local problem data
-export type Problem = {
+export type localProblemType = {
   id: string;
   title: string;
   problemStatement: string;
@@ -38,7 +38,8 @@ export type Problem = {
   starterFunctionName: string;
 };
 
-export type DBProblem = {
+// DB problem data
+export type DBProblemType = {
   id: string;
   title: string;
   category: string;

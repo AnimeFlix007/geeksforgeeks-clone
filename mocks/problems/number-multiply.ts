@@ -1,27 +1,24 @@
+import { localProblemType } from "@/app/types";
 import assert from "assert";
-import { Problem } from "../types";
 
-const starterCodeTwoSum = `function multiply2Nums(nums,target){
+const starterCodenumberMultiply = `function numberMultiply(num){
   // Write your code here
 };`;
 
 // checks if the user has the correct code
-const handlertwomul = (fn: any) => {
+const handlertnumberMultiply = (fn: any) => {
   // fn is the callback that user's code is passed into
   try {
     const nums = [
-      [2, 1],
-      [-3, -1],
-      [2, 0],
+      3, -1, 2
     ];
 
-    const answers = [2, 3, 0];
+    const answers = [9, 1, 4];
 
     // loop all tests to check if the user's code is correct
     for (let i = 0; i < nums.length; i++) {
       // result is the output of the user's function and answer is the expected output
-      const [a, b] = nums[i];
-      const result = fn(a, b);
+      const result = fn(nums[i]);
       assert.deepStrictEqual(result, answers[i]);
     }
     return true;
@@ -31,12 +28,11 @@ const handlertwomul = (fn: any) => {
   }
 };
 
-export const twomul: Problem = {
-  id: "2-mul",
-  title: "2. Multiply 2 Numbers",
+export const numberMultiply: localProblemType = {
+  id: "number-multiply",
+  title: "2. Number Multiply",
   problemStatement: `<p class='mt-3'>
-  Given 2 Integers numbers -> a & b <code>nums</code> and return
-  the result of both the numbers.
+  Given a numbers <code>num</code> , multiply the number to itselfy and return the result
 </p>
 <p class='mt-3'>
   Best Of Luck!!
@@ -45,19 +41,19 @@ export const twomul: Problem = {
   examples: [
     {
       id: 1,
-      inputText: "nums = 2 & 1",
-      outputText: "2",
-      explanation: "Because 2*1 = 2, hence we return 2.",
+      inputText: "num = 3",
+      outputText: "9",
+      explanation: "Because 3*3 = 9, hence we return 9 as result.",
     },
     {
       id: 2,
-      inputText: "nums = -3 & -1",
-      outputText: "3",
+      inputText: "num = -1",
+      outputText: "1",
     },
     {
       id: 3,
-      inputText: " nums = 2 & 0",
-      outputText: "0",
+      inputText: " num = 2",
+      outputText: "4",
     },
   ],
   constraints: ` <li class='mt-2'>
@@ -70,8 +66,8 @@ export const twomul: Problem = {
 <li class='mt-2 text-sm'>
 <strong>Only one valid answer exists.</strong>
 </li>`,
-  handlerFunction: handlertwomul,
-  starterCode: starterCodeTwoSum,
+  handlerFunction: handlertnumberMultiply,
+  starterCode: starterCodenumberMultiply,
   order: 1,
-  starterFunctionName: "function twoSum(",
+  starterFunctionName: "function numberMultiply(",
 };

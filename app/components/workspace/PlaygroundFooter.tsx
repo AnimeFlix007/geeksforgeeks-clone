@@ -20,7 +20,7 @@ export default function PlaygroundFooter({}: Props) {
             className="px-3 py-1.5 text-sm font-medium items-center whitespace-nowrap transition-all focus:outline-none inline-flex bg-slate-200 hover:bg-slate-300 rounded-lg"
             onClick={() => {}}
           >
-            Run
+            Compile & Run
           </button>
           <button
             className="px-3 py-1.5 font-medium items-center transition-all focus:outline-none inline-flex text-sm  bg-green-500 hover:bg-green-400 rounded-lg text-white"
