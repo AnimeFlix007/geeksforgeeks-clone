@@ -5,6 +5,7 @@ import React from "react";
 import Split from "react-split";
 import { Problem } from "@/mocks/types";
 import PreferenceNavbar from "./PreferenceNavbar";
+import PlaygroundFooter from "./PlaygroundFooter";
 
 type Props = {
   problem: Problem;
@@ -33,10 +34,10 @@ export default function Playground({ problem }: Props) {
           {/* testcase heading */}
           <div className="flex h-10 items-center space-x-6">
             <div className="relative flex h-full flex-col justify-center cursor-pointer">
-              <div className="text-sm font-medium leading-5 text-white">
+              <div className="text-sm font-medium leading-5">
                 Testcases
               </div>
-              <hr className="absolute bottom-0 h-0.5 w-full rounded-full border-none bg-white" />
+              <hr className="absolute bottom-0 h-0.5 w-full rounded-full border-none bg-gray-300" />
             </div>
           </div>
 
@@ -49,7 +50,7 @@ export default function Playground({ problem }: Props) {
               >
                 <div className="flex flex-wrap items-center gap-y-4">
                   <div
-                    className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap text-gray-500`}
+                    className={`font-medium items-center transition-all focus:outline-none inline-flex bg-slate-100 hover:bg-slate-200 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap text-gray-500`}
                   >
                     Case {index + 1}
                   </div>
@@ -70,7 +71,7 @@ export default function Playground({ problem }: Props) {
           </div>
         </div>
       </Split>
-      {/* <EditorFooter handleSubmit={handleSubmit} /> */}
+      <PlaygroundFooter />
     </div>
   );
 }
