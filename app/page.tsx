@@ -2,12 +2,20 @@
 
 import { useState, useEffect } from "react";
 import ProblemsTable from "./components/home/ProblemTable";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "@/firebase/firebase.config";
-import { toast } from "react-toastify";
+import { DBProblemType } from "./types";
 
 export default function Home() {
   const [loadingProblems, setLoadingProblems] = useState(true);
+  const [allProblems, setAllProblems] = useState<DBProblemType[]>([]);
   const [data, setData] = useState({
     id: "",
     title: "",
@@ -19,32 +27,42 @@ export default function Home() {
     dislikes: 0,
   });
 
-  const submitHandler = async(e: any) => {
+  const submitHandler = async (e: any) => {
     e.preventDefault();
     console.log(data);
     try {
-      const res = await setDoc(doc(db, "problems", data.id), {...data, order: Number(data.order)})
-      console.log(res)
+      const res = await setDoc(doc(db, "problems", data.id), {
+        ...data,
+        order: Number(data.order),
+      });
+      console.log(res);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   function onchangeHandler(e: any) {
     setData({
       ...data,
-      [e.target.name]: e.target.value
-    })
+      [e.target.name]: e.target.value,
+    });
   }
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => {
+    (async function () {
+      setLoadingProblems(true);
+      const q = query(collection(db, "problems"), orderBy("order", "asc"));
+      const data = await getDocs(q);
+      const tmp: DBProblemType[] = [];
+      data.forEach((doc) => {
+        tmp.push({
+          ...doc.data(),
+          id: doc.id,
+        } as DBProblemType);
+      });
+      setAllProblems(tmp);
       setLoadingProblems(false);
-    }, 400);
-
-    return () => {
-      clearTimeout(timeOutId);
-    };
+    })();
   }, []);
 
   return (
@@ -80,9 +98,7 @@ export default function Home() {
                 </tr>
               </thead>
             )}
-            {!loadingProblems && (
-              <ProblemsTable setLoadingProblems={setLoadingProblems} />
-            )}
+            {!loadingProblems && <ProblemsTable allProblems={allProblems} />}
           </table>
           {loadingProblems && (
             <section className="max-w-[1200px] mx-auto sm:w-7/12 w-full animate-pulse">
@@ -93,12 +109,42 @@ export default function Home() {
           )}
         </div>
         <form onSubmit={submitHandler}>
-          <input onChange={onchangeHandler} type="text" placeholder="Problem Id" name="id" />
-          <input onChange={onchangeHandler} type="text" placeholder="title" name="title" />
-          <input onChange={onchangeHandler} type="text" placeholder="Difficulty" name="difficulty" />
-          <input onChange={onchangeHandler} type="text" placeholder="category" name="category" />
-          <input onChange={onchangeHandler} type="text" placeholder="videoId" name="videoId" />
-          <input onChange={onchangeHandler} type="number" placeholder="order" name="order" />
+          <input
+            onChange={onchangeHandler}
+            type="text"
+            placeholder="Problem Id"
+            name="id"
+          />
+          <input
+            onChange={onchangeHandler}
+            type="text"
+            placeholder="title"
+            name="title"
+          />
+          <input
+            onChange={onchangeHandler}
+            type="text"
+            placeholder="Difficulty"
+            name="difficulty"
+          />
+          <input
+            onChange={onchangeHandler}
+            type="text"
+            placeholder="category"
+            name="category"
+          />
+          <input
+            onChange={onchangeHandler}
+            type="text"
+            placeholder="videoId"
+            name="videoId"
+          />
+          <input
+            onChange={onchangeHandler}
+            type="number"
+            placeholder="order"
+            name="order"
+          />
           <button type="submit">Submit</button>
         </form>
       </main>

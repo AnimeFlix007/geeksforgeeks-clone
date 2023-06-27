@@ -1,18 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BsCheckCircle } from "react-icons/bs";
 import { AiFillYoutube } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
-import { problemList } from "@/mocks/ProblemList";
 import YouTube from "react-youtube";
+import { DBProblemType } from "@/app/types";
 
 type ProblemsTableProps = {
-  setLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
+  allProblems: DBProblemType[];
 };
 
-const ProblemsTable: React.FC<ProblemsTableProps> = ({
-  setLoadingProblems
-}) => {
+const ProblemsTable: React.FC<ProblemsTableProps> = ({ allProblems }) => {
   const [youtubePlayer, setYoutubePlayer] = useState({
     isOpen: false,
     videoId: "",
@@ -29,25 +29,30 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
 
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
+
   return (
     <>
       <tbody className="text-black">
-        {problemList.map((problem, idx) => {
+        {allProblems.map((problem, idx) => {
           const difficulyColor =
             problem.difficulty === "Easy"
-              ? "text-dark-green-s"
+              ? "text-green-600"
               : problem.difficulty === "Medium"
-              ? "text-dark-yellow"
-              : "text-dark-pink";
+              ? "text-yellow-600"
+              : "text-pink-600";
+          const difficulyBgColor =
+            problem.difficulty === "Easy"
+              ? "bg-green-100"
+              : problem.difficulty === "Medium"
+              ? "bg-yellow-100"
+              : "bg-pink-100";
           return (
             <tr
               className={`${idx % 2 == 1 ? "bg-dark-layer-1" : ""}`}
               key={problem.id}
             >
               <th className="px-2 py-4 font-medium whitespace-nowrap text-dark-green-s">
-                {/* {solvedProblems.includes(problem.id) && ( */}
                 <BsCheckCircle fontSize={"18"} width="18" />
-                {/* )} */}
               </th>
               <td className="px-6 py-4">
                 <Link
@@ -57,8 +62,12 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
                   {problem.title}
                 </Link>
               </td>
-              <td className={`px-6 py-4 ${difficulyColor}`}>
-                {problem.difficulty}
+              <td>
+                <div
+                  className={`px-6 py-3 ${difficulyColor} w-min rounded-full font-semibold ${difficulyBgColor}`}
+                >
+                  {problem.difficulty}
+                </div>
               </td>
               <td className={"px-6 py-4"}>{problem.category}</td>
               <td className={"px-6 py-4"}>
