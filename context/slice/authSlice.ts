@@ -1,20 +1,20 @@
-import { User } from "@/app/types";
 import { createSlice } from "@reduxjs/toolkit";
+import { DocumentData } from "firebase/firestore";
 
 type initialState = {
-  user: User | null;
+  user:  DocumentData | undefined
 };
 
 type Action = {
-  payload: User | null;
+  payload:  DocumentData | undefined
 };
 
-const loggedInUser: () => User | null = () => {
+const loggedInUser: () =>  DocumentData | undefined = () => {
   if (typeof window !== "undefined") {
     const item = window.localStorage.getItem("geeks4geeks");
-    return item ? JSON.parse(item) : null;
+    return item ? JSON.parse(item) : undefined;
   } else {
-    return null;
+    return undefined;
   }
 };
 
@@ -32,7 +32,7 @@ const authSlice = createSlice({
     },
     logOut: (state: initialState) => {
       localStorage.removeItem("geeks4geeks");
-      state.user = null;
+      state.user = undefined;
     },
   },
 });

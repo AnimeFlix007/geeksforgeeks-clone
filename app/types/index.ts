@@ -6,14 +6,6 @@ export type Example = {
   img?: string;
 };
 
-export type User = {
-  access_token: string;
-  id: string;
-  fullName: string | null;
-  email: string | null;
-  photoURL: string | null;
-};
-
 export type toastType = {
   position: string;
   autoClose: number;
@@ -50,3 +42,4 @@ export type DBProblemType = {
   videoId?: string;
   link?: string;
 };
+

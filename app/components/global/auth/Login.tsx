@@ -17,15 +17,18 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword,
   UserCredential,
+  getAuth,
 } from "firebase/auth";
 import {
   auth,
+  db,
   githubProvider,
   googleProvider,
 } from "@/firebase/firebase.config";
 import { setUser } from "@/context/slice/authSlice";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { DocumentData, doc, getDoc, setDoc } from "firebase/firestore";
 
 type initialValues = {
   email: string;
@@ -38,7 +41,7 @@ const initialValues: initialValues = {
 };
 
 export default function LoginModal() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const isOpen = useAppSelector((store) => store.loginModal.isOpen);
   const { errors, handleChange, handleBlur, handleSubmit, values, touched } =
@@ -49,7 +52,7 @@ export default function LoginModal() {
         values: initialValues,
         formikHelpers: FormikHelpers<initialValues>
       ) {
-        setLoading(prev => !prev);
+        setLoading((prev) => !prev);
         try {
           const data: UserCredential = await signInWithEmailAndPassword(
             auth,
@@ -63,14 +66,27 @@ export default function LoginModal() {
             email: data.user.email,
             photoURL: data.user.photoURL,
           };
-          dispatch(setUser(user));
-          dispatch(onCloseLoginModal()); 
+
+          const docRef = doc(db, "users", user.id);
+          const docSnap = await getDoc(docRef);
+          if (!docSnap.exists()) {
+            await setDoc(doc(db, "users", user.id), {
+              ...user,
+              likedProblems: [],
+              dislikeProblems: [],
+              solvedProblems: [],
+              favProblems: [],
+            });
+          }
+          const docVal: DocumentData | undefined = docSnap.data()
+          dispatch(setUser(docVal));
+          dispatch(onCloseLoginModal());
           toast.success("signed in successfully!!");
           formikHelpers.resetForm();
         } catch (error: any) {
           toast.error(error.message);
         } finally {
-          setLoading(prev => !prev);
+          setLoading((prev) => !prev);
         }
       },
     });
@@ -84,21 +100,31 @@ export default function LoginModal() {
     dispatch(setOpenRegisterModal());
   }
 
-  const googleLogin = () => {
-    signInWithPopup(auth, googleProvider)
-      .then((data) => {
-        const user = {
-          access_token: data.user.refreshToken,
-          id: data.user.uid,
-          fullName: data.user.displayName,
-          email: data.user.email,
-          photoURL: data.user.photoURL,
-        };
-        dispatch(setUser(user));
-      })
-      .then(() => toast.success("LoggedIn Successfully"))
-      .then(() => dispatch(onCloseLoginModal()))
-      .catch((err) => toast.error(err.message));
+  const googleLogin = async () => {
+    const data = await signInWithPopup(auth, googleProvider);
+    const user = {
+      access_token: data.user.refreshToken,
+      id: data.user.uid,
+      fullName: data.user.displayName,
+      email: data.user.email,
+      photoURL: data.user.photoURL,
+    };
+
+    toast.success("LoggedIn Successfully");
+    dispatch(onCloseLoginModal());
+
+    const docRef = doc(db, "users", user.id);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
+      await setDoc(doc(db, "users", user.id), {
+        ...user,
+        likedProblems: [],
+        dislikeProblems: [],
+        solvedProblems: [],
+        favProblems: [],
+      });
+    }
+    dispatch(setUser(docSnap.data()));
   };
 
   const githubLogin = () => {
