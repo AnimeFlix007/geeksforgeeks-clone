@@ -1,6 +1,5 @@
 "use client";
 
-import { AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { FormikHelpers, useFormik } from "formik";
 
@@ -17,12 +16,10 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword,
   UserCredential,
-  getAuth,
 } from "firebase/auth";
 import {
   auth,
   db,
-  githubProvider,
   googleProvider,
 } from "@/firebase/firebase.config";
 import { setUser } from "@/context/slice/authSlice";
@@ -101,37 +98,34 @@ export default function LoginModal() {
   }
 
   const googleLogin = async () => {
-    const data = await signInWithPopup(auth, googleProvider);
-    const user = {
-      access_token: data.user.refreshToken,
-      id: data.user.uid,
-      fullName: data.user.displayName,
-      email: data.user.email,
-      photoURL: data.user.photoURL,
-    };
-
-    toast.success("LoggedIn Successfully");
-    dispatch(onCloseLoginModal());
-
-    const docRef = doc(db, "users", user.id);
-    const docSnap = await getDoc(docRef);
-    if (!docSnap.exists()) {
-      await setDoc(doc(db, "users", user.id), {
-        ...user,
-        likedProblems: [],
-        dislikeProblems: [],
-        solvedProblems: [],
-        favProblems: [],
-      });
+    try {
+      const data = await signInWithPopup(auth, googleProvider);
+      const user = {
+        access_token: data.user.refreshToken,
+        id: data.user.uid,
+        fullName: data.user.displayName,
+        email: data.user.email,
+        photoURL: data.user.photoURL,
+      };
+  
+      toast.success("LoggedIn Successfully");
+      dispatch(onCloseLoginModal());
+  
+      const docRef = doc(db, "users", user.id);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        await setDoc(doc(db, "users", user.id), {
+          ...user,
+          likedProblems: [],
+          dislikeProblems: [],
+          solvedProblems: [],
+          favProblems: [],
+        });
+      }
+      dispatch(setUser(docSnap.data()));
+    } catch (error: any) {
+      toast.error(error.message);
     }
-    dispatch(setUser(docSnap.data()));
-  };
-
-  const githubLogin = () => {
-    signInWithPopup(auth, githubProvider)
-      .then(() => toast.success("LoggedIn Successfully"))
-      .then(() => dispatch(onCloseLoginModal()))
-      .catch((err) => console.log(err.message));
   };
 
   const bodyContent = (
@@ -172,12 +166,6 @@ export default function LoginModal() {
         label="Continue with Google"
         icon={FcGoogle}
         onClick={googleLogin}
-      />
-      <Button
-        outline
-        label="Continue with Github"
-        icon={AiFillGithub}
-        onClick={githubLogin}
       />
       <div
         className="
