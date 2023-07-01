@@ -15,8 +15,15 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 import { localProblemType } from "@/app/types";
 import { useDispatch } from "react-redux";
-import { DocumentData, doc, getDoc } from "firebase/firestore";
+import {
+  DocumentData,
+  doc,
+  getDoc,
+  runTransaction,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "@/firebase/firebase.config";
+import { useAppSelector } from "@/context/store";
 
 type Props = {
   problem: localProblemType;
@@ -25,7 +32,11 @@ type Props = {
 
 export default function ProblemDescription({ problem, _solved }: Props) {
   const dispatch = useDispatch();
+  const { user } = useAppSelector((store) => store.auth);
   const [loading, setLoading] = useState<boolean>(false);
+  const [liked, setLiked] = useState<boolean>(false);
+  const [disliked, setDisliked] = useState<boolean>(false);
+  const [updating, setUpdating] = useState<boolean>(false);
   const [currentProblem, setCurrentProblem] = useState<
     DocumentData | undefined | null
   >(null);
@@ -39,6 +50,77 @@ export default function ProblemDescription({ problem, _solved }: Props) {
     }
     getCurrentProblem(problem.id);
   }, [dispatch, problem.id]);
+
+  const returnUserDataAndProblemData = async (transaction: any) => {
+    const userRef = doc(db, "users", user?.id);
+    const problemRef = doc(db, "problems", problem.id);
+    const userDoc = await transaction.get(userRef);
+    const problemDoc = await transaction.get(problemRef);
+    return { userDoc, problemDoc, userRef, problemRef };
+  };
+
+  const handleLike = async () => {
+    if (!user) {
+      toast.error("You must be logged in to like a problem");
+      return;
+    }
+    if (updating) return;
+    setUpdating(true);
+    await runTransaction(db, async (transaction) => {
+      const { problemDoc, userDoc, problemRef, userRef } =
+        await returnUserDataAndProblemData(transaction);
+
+      if (userDoc.exists() && problemDoc.exists()) {
+        if (liked) {
+          transaction.update(userRef, {
+            likedProblems: userDoc
+              .data()
+              .likedProblems.filter((id: string) => id !== problem.id),
+          });
+          transaction.update(problemRef, {
+            likes: problemDoc.data().likes - 1,
+          });
+
+          setCurrentProblem((prev) =>
+            prev ? { ...prev, likes: prev.likes - 1 } : null
+          );
+          setLiked(false);
+        } else if (disliked) {
+          transaction.update(userRef, {
+            likedProblems: [...userDoc.data().likedProblems, problem.id],
+            dislikedProblems: userDoc
+              .data()
+              .dislikedProblems.filter((id: string) => id !== problem.id),
+          });
+          transaction.update(problemRef, {
+            likes: problemDoc.data().likes + 1,
+            dislikes: problemDoc.data().dislikes - 1,
+          });
+
+          setCurrentProblem((prev) =>
+            prev
+              ? { ...prev, likes: prev.likes + 1, dislikes: prev.dislikes - 1 }
+              : null
+          );
+          setDisliked(false);
+        } else {
+          transaction.update(userRef, {
+            likedProblems: [...userDoc.data().likedProblems, problem.id],
+          });
+          transaction.update(problemRef, {
+            likes: problemDoc.data().likes + 1,
+          });
+          setCurrentProblem((prev) =>
+            prev ? { ...prev, likes: prev.likes + 1 } : null
+          );
+          setLiked(true);
+        }
+      } else {
+        toast.error("Something went wrong !!");
+      }
+    });
+    setUpdating(false);
+  };
 
   return (
     <div>
@@ -79,8 +161,14 @@ export default function ProblemDescription({ problem, _solved }: Props) {
                 <div className="rounded p-[3px] ml-4 text-lg transition-colors duration-200  text-green-500">
                   <BsCheck2Circle />
                 </div>
-                <div className="flex items-center cursor-pointer hover:bg-green-300 space-x-1 rounded p-[3px]  ml-4 text-lg transition-colors duration-200 text-green-500">
-                  <AiFillLike />
+                <div onClick={handleLike} className="flex items-center cursor-pointer hover:bg-green-300 space-x-1 rounded p-[3px]  ml-4 text-lg transition-colors duration-200 text-green-500">
+                  {liked && !updating && (
+                    <AiFillLike />
+                  )}
+                  {!liked && !updating && <AiFillLike />}
+                  {updating && (
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                  )}
                   <span className="text-xs">{currentProblem.likes}</span>
                 </div>
                 <div className="flex items-center cursor-pointer hover:bg-red-300 space-x-1 rounded p-[3px]  ml-4 text-lg transition-colors duration-200 text-red-500">
