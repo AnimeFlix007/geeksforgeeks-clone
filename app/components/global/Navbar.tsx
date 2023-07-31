@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Timer from "../Timer";
+import Link from "next/link";
 
 type Props = {};
 
@@ -28,16 +29,12 @@ export default function Navbar({}: Props) {
       .then(() => toast.success("Logged out Successfully"));
   }
 
-  const navigateToHomePage = () => {
-    router.push("/");
-  };
-
   return (
     <nav className="bg-green-100 border-gray-200 dark:bg-gray-900">
       <div className="flex flex-wrap items-center justify-between mx-auto p-4">
-        <p
+        <Link
           className="flex items-center cursor-pointer"
-          onClick={navigateToHomePage}
+          href={"/"}
         >
           <Image
             src="/images/gfglogo.jpg"
@@ -49,7 +46,7 @@ export default function Navbar({}: Props) {
           <span className="self-center text-2xl text-slate-700 font-semibold whitespace-nowrap dark:text-white">
             GeeksForGeeks
           </span>
-        </p>
+        </Link>
         <div className="flex items-center md:order-2">
           <div className=" px-4">
             <Timer />
